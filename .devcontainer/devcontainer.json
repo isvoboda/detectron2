@@ -1,0 +1,26 @@
+// See https://aka.ms/vscode-remote/containers for the
+// documentation about the devcontainer.json format
+{
+	"name": "detectron2",
+	"dockerComposeFile": [
+		"../docker-ps/docker-compose.yml",
+		"docker-compose.yml"
+	],
+	"service": "detectron2",
+	"workspaceFolder": "/app",
+	"extensions": [
+		"ms-python.python",
+		"streetsidesoftware.code-spell-checker",
+		"eamodio.gitlens",
+		"njpwerner.autodocstring",
+		"gruntfuggly.todo-tree",
+		"mhutchie.git-graph",
+		"christian-kohler.path-intellisense",
+		"humao.rest-client"
+	],
+	"shutdownAction": "stopCompose",
+	// "containerUser": "psvoboda", - no effect in a case of docker-compose
+	"remoteUser": "psvoboda",
+	// "updateRemoteUserUID": true
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y htop git openssh-client bash-completion vim"
+}

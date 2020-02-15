@@ -1,0 +1,22 @@
+#-------------------------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
+#-------------------------------------------------------------------------------------------------------------
+
+version: '2.3'
+services:
+  detectron2:
+    volumes:
+      - ${SSH_AUTH_SOCK}:/ssh-agent
+      - ~/.gitconfig:/home/psvoboda/.gitconfig
+    environment:
+      - USER_UID=${USER_ID:-1000}
+      - DISPLAY=$DISPLAY
+      - NVIDIA_VISIBLE_DEVICES=all
+    command:
+      - bash
+      - -c
+      - |
+        sudo chown $$(id -u) /opt -R
+        pip install -e /app
+        exec sleep infinity
