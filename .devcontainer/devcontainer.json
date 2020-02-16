@@ -2,11 +2,30 @@
 // documentation about the devcontainer.json format
 {
 	"name": "detectron2",
-	"dockerComposeFile": [
-		"../docker-ps/docker-compose.yml",
-		"docker-compose.yml"
+	"image": "detectron2-dev",
+	// Local Development
+	"workspaceMount": "src=/home/psvoboda/projects/detectron2,dst=/app,type=bind,consistency=cached",
+	// Remote Development
+	// "workspaceMount": "src=/home/isvoboda/projects/detectron2,dst=/app,type=bind,consistency=cached",
+	"runArgs": [
+		"-v","/var/run/docker.sock:/var/run/docker.sock",
+		"-v","${env:SSH_AUTH_SOCK}:/ssh-agent",
+		"-v","${env:HOME}/.ssh/known_hosts:/home/developer/.ssh/known_hosts",
+		"-e","SSH_AUTH_SOCK=/ssh-agent",
+		"-e", "LOGIN=developer",
+		// Change USER_UID to your $(id -u)
+		"-e", "USER_UID=1000",
+		"--gpus","all",
+		"--cap-add","SYS_PTRACE",
+		// See https://docs.nvidia.com/deeplearning/frameworks/user-guide/index.html#setincshmem
+		"--shm-size=1g"
 	],
-	"service": "detectron2",
+
+	"remoteUser": "developer",
+	"overrideCommand": false,
+	"updateRemoteUserUID": false,
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y htop git openssh-client bash-completion vim && sudo chown $(id -u) /opt -R && pip install -e .",
+
 	"workspaceFolder": "/app",
 	"extensions": [
 		"ms-python.python",
@@ -18,9 +37,4 @@
 		"christian-kohler.path-intellisense",
 		"humao.rest-client"
 	],
-	"shutdownAction": "stopCompose",
-	// "containerUser": "psvoboda", - no effect in a case of docker-compose
-	"remoteUser": "psvoboda",
-	// "updateRemoteUserUID": true
-	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y htop git openssh-client bash-completion vim"
 }
